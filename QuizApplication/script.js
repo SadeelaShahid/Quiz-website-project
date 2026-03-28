@@ -1,66 +1,56 @@
-let i = 0;
+const quizData = [
+    {
+        question: "What is HTML?",
+        options: ["Programming Language", "Markup Language", "Database", "OS"],
+        answer: "Markup Language"
+    },
+    {
+        question: "What is CSS used for?",
+        options: ["Styling", "Database", "Logic", "Server"],
+        answer: "Styling"
+    },
+    {
+        question: "Which language is used for web apps?",
+        options: ["Python", "Java", "JavaScript", "All"],
+        answer: "All"
+    }
+];
+
+let currentQuestion = 0;
 let score = 0;
-let time = 10;
-let timer;
 
-function loadQ() {
-    let q = quiz[i];
+function loadQuestion() {
+    let q = quizData[currentQuestion];
+    document.getElementById("question").innerText = q.question;
 
-    document.getElementById("qno").innerText = i + 1;
-    document.getElementById("question").innerText = q.q;
+    let answersDiv = document.getElementById("answers");
+    answersDiv.innerHTML = "";
 
-    let html = "";
-    q.o.forEach((opt, index) => {
-        html += `<div class="option" onclick="check(${index},this)">${opt}</div>`;
+    q.options.forEach(option => {
+        let btn = document.createElement("button");
+        btn.innerText = option;
+
+        btn.onclick = () => {
+            if (option === q.answer) {
+                score++;
+            }
+            nextQuestion();
+        };
+
+        answersDiv.appendChild(btn);
     });
-
-    document.getElementById("options").innerHTML = html;
-
-    startTimer();
 }
 
-function check(ans, el) {
-    clearInterval(timer);
+function nextQuestion() {
+    currentQuestion++;
 
-    let correct = quiz[i].a;
-    let all = document.querySelectorAll(".option");
-
-    all.forEach(o => o.onclick = null);
-
-    if (ans === correct) {
-        el.classList.add("correct");
-        score++;
+    if (currentQuestion < quizData.length) {
+        loadQuestion();
     } else {
-        el.classList.add("wrong");
-        all[correct].classList.add("correct");
+        localStorage.setItem("score", score);
+        window.location.href = "result.html";
     }
 }
 
-function nextQ() {
-    i++;
-
-    if (i < quiz.length) {
-        time = 10;
-        loadQ();
-    } else {
-        document.getElementById("question").innerText = "Finished!";
-        document.getElementById("options").innerHTML = "";
-        document.getElementById("result").innerText = "Score: " + score;
-    }
-}
-
-function startTimer() {
-    document.getElementById("time").innerText = time + "s";
-
-    timer = setInterval(() => {
-        time--;
-        document.getElementById("time").innerText = time + "s";
-
-        if (time === 0) {
-            clearInterval(timer);
-            nextQ();
-        }
-    }, 1000);
-}
-
-window.onload = loadQ;
+// Start quiz
+loadQuestion();

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Your Score</h1>
+    <h2 id="score"></h2>
+    <button onclick="restart()">Restart Quiz</button>
+</div>
+
+<script>
+document.getElementById("score").innerText =
+    localStorage.getItem("score");
+
+function restart() {
+    window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
